@@ -7,13 +7,6 @@ mod common {
     pub fn parse(input: &str) -> Vec<&str> {
         input.lines().collect()
     }
-
-    pub fn parseV2(input: &str) -> Vec<Vec<u8>> {
-        input
-            .lines()
-            .map(|line| line.chars().map(|c| (c as u8) - 48u8).collect())
-            .collect()
-    }
 }
 
 pub mod part1 {
@@ -44,30 +37,39 @@ pub mod part1 {
 }
 
 pub mod part2 {
-    fn best_k(arr: &[u8], k: usize, memo: &mut std::collections::HashMap<(usize, usize), i128>) -> i128 {
-        if k == 0 {
-            return 0;
-        }
-        if let Some(&v) = memo.get(&(arr.as_ptr() as usize, k)) {
-            return v;
-        }
-
-        let mut best = 0i128;
-        for i in 0..=arr.len() - k {
-            let digit_value = arr[i] as i128 * 10i128.pow((k - 1) as u32);
-            let rest = best_k(&arr[i + 1..], k - 1, memo);
-            best = best.max(digit_value + rest);
-        }
-
-        memo.insert((arr.as_ptr() as usize, k), best);
-        best
-    }
+    const K: usize = 12;
 
     pub fn solve(string: &str) -> i128 {
-        let parsed = crate::day03::common::parseV2(string);
-        parsed.into_iter().map(|v| {
-            let mut memo = std::collections::HashMap::new();
-            best_k(&v, 12, &mut memo)
-        }).sum()
+        let mut pow10 = [0i64; K + 1];
+        pow10[0] = 1;
+        for i in 1..=K {
+            pow10[i] = pow10[i - 1] * 10;
+        }
+
+        let mut total: i128 = 0;
+
+        for line in string.lines() {
+            let bytes = line.as_bytes();
+            let n = bytes.len();
+            let mut dp = [0i64; K + 1];
+
+            for i in (0..n).rev() {
+                let digit = (bytes[i] - b'0') as i64;
+                let remaining = n - i;
+                let max_k = remaining.min(K);
+                for j in (1..=max_k).rev() {
+                    let take = digit * pow10[j - 1] + dp[j - 1];
+                    if remaining > j {
+                        dp[j] = dp[j].max(take);
+                    } else {
+                        dp[j] = take;
+                    }
+                }
+            }
+
+            total += dp[K] as i128;
+        }
+
+        total
     }
 }
