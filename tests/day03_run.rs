@@ -1,4 +1,4 @@
-use aoc::day03::{part1, part2, TEST};
+use aoc::day03::{TEST, part1, part2};
 
 #[test]
 fn day01_part1_real_input() {

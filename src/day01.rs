@@ -1,4 +1,4 @@
-pub static TEST: &str= "L68
+pub static TEST: &str = "L68
 L30
 R48
 L5

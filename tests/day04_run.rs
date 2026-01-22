@@ -1,4 +1,4 @@
-use aoc::day04::{part1, part2, TEST};
+use aoc::day04::{TEST, part1, part2};
 
 #[test]
 fn day04_part1_real_input() {
@@ -9,5 +9,5 @@ fn day04_part1_real_input() {
 #[test]
 fn day04_part2_real_input() {
     let result = part2::solve(TEST);
-    assert_eq!(result, -1);
+    assert_eq!(result, 43);
 }
